@@ -35,7 +35,7 @@ class Human36M:
             return 5
         elif self.data_split == 'test':
             # to get psedu GT
-            return 50
+            return 1
         else:
             assert 0, print('Unknown subset')
 
