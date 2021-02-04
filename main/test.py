@@ -44,7 +44,7 @@ def main():
     preds = []
 
     with torch.no_grad():
-        for itr, input_img in enumerate(tqdm(tester.batch_generator)):
+        for itr, input_img in enumerate(tester.batch_generator):
             
             # forward
             coord_out = tester.model(input_img)
