@@ -11,7 +11,8 @@ from utils.vis import vis_keypoints, vis_3d_skeleton
 
 class Human36M:
     def __init__(self, data_split):
-        self.data_split = data_split
+        # self.data_split = data_split
+        self.data_split = 'train'
         self.img_dir = osp.join('..', 'data', 'Human36M', 'images')
         self.annot_path = osp.join('..', 'data', 'Human36M', 'annotations')
         self.human_bbox_root_dir = osp.join('..', 'data', 'Human36M', 'bbox_root', 'bbox_root_human36m_output.json')
