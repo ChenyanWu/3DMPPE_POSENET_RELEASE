@@ -32,10 +32,10 @@ class Human36M:
     def get_subsampling_ratio(self):
         if self.data_split == 'train':
             # to get psedu GT
-            return 1
+            return 5
         elif self.data_split == 'test':
             # to get psedu GT
-            return 1
+            return 50
         else:
             assert 0, print('Unknown subset')
 
