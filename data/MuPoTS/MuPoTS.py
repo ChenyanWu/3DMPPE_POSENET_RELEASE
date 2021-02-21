@@ -82,8 +82,8 @@ class MuPoTS:
                 annot = json.load(f)
             
             for i in range(len(annot)):
-                if i > 100:
-                    break
+                # if i > 100:
+                #     break
                 image_id = annot[i]['image_id']
                 img = db.loadImgs(image_id)[0]
                 img_width, img_height = img['width'], img['height']
