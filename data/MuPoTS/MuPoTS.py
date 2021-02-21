@@ -225,7 +225,7 @@ class MuPoTS:
             instance_case['c'] = c.tolist()
             instance_case['bbox'] = bbox.tolist()
             instance_case['root_cam'] = gt['root_cam'].tolist()
-            instance_case['img_path'] = gt['img_path'].tolist()
+            instance_case['img_path'] = gt['img_path']
             instance_case['joint_cam'] = pred_2d_kpt[:, :2].tolist()
             instance_case['joint_img'] = pred_3d_kpt.tolist()
             pred_list.append(instance_case)
