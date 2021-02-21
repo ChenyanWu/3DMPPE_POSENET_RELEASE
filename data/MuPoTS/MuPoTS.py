@@ -104,63 +104,139 @@ class MuPoTS:
 
         return data
 
+    # raw evaluate to output mat
+    # def evaluate(self, preds, result_dir):
+    #
+    #     print('Evaluation start...')
+    #     gts = self.data
+    #     sample_num = len(preds)
+    #     joint_num = self.original_joint_num
+    #
+    #     pred_2d_save = {}
+    #     pred_3d_save = {}
+    #     for n in range(sample_num):
+    #
+    #         gt = gts[n]
+    #         f = gt['f']
+    #         c = gt['c']
+    #         bbox = gt['bbox']
+    #         gt_3d_root = gt['root_cam']
+    #         img_name = gt['img_path'].split('/')
+    #         img_name = img_name[-2] + '_' + img_name[-1].split('.')[0] # e.g., TS1_img_0001
+    #
+    #         # restore coordinates to original space
+    #         pred_2d_kpt = preds[n].copy()
+    #         # only consider eval_joint
+    #         pred_2d_kpt = np.take(pred_2d_kpt, self.eval_joint, axis=0)
+    #         pred_2d_kpt[:,0] = pred_2d_kpt[:,0] / cfg.output_shape[1] * bbox[2] + bbox[0]
+    #         pred_2d_kpt[:,1] = pred_2d_kpt[:,1] / cfg.output_shape[0] * bbox[3] + bbox[1]
+    #         pred_2d_kpt[:,2] = (pred_2d_kpt[:,2] / cfg.depth_dim * 2 - 1) * (cfg.bbox_3d_shape[0]/2) + gt_3d_root[2]
+    #
+    #         # 2d kpt save
+    #         if img_name in pred_2d_save:
+    #             pred_2d_save[img_name].append(pred_2d_kpt[:,:2])
+    #         else:
+    #             pred_2d_save[img_name] = [pred_2d_kpt[:,:2]]
+    #
+    #         vis = False
+    #         if vis:
+    #             cvimg = cv2.imread(gt['img_path'], cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)
+    #             filename = str(random.randrange(1,500))
+    #             tmpimg = cvimg.copy().astype(np.uint8)
+    #             tmpkps = np.zeros((3,joint_num))
+    #             tmpkps[0,:], tmpkps[1,:] = pred_2d_kpt[:,0], pred_2d_kpt[:,1]
+    #             tmpkps[2,:] = 1
+    #             tmpimg = vis_keypoints(tmpimg, tmpkps, self.skeleton)
+    #             cv2.imwrite(filename + '_output.jpg', tmpimg)
+    #
+    #         # back project to camera coordinate system
+    #         pred_3d_kpt = pixel2cam(pred_2d_kpt, f, c)
+    #
+    #         # 3d kpt save
+    #         if img_name in pred_3d_save:
+    #             pred_3d_save[img_name].append(pred_3d_kpt)
+    #         else:
+    #             pred_3d_save[img_name] = [pred_3d_kpt]
+    #
+    #     output_path = osp.join(result_dir,'preds_2d_kpt_mupots.mat')
+    #     sio.savemat(output_path, pred_2d_save)
+    #     print("Testing result is saved at " + output_path)
+    #     output_path = osp.join(result_dir,'preds_3d_kpt_mupots.mat')
+    #     sio.savemat(output_path, pred_3d_save)
+    #     print("Testing result is saved at " + output_path)
+
     def evaluate(self, preds, result_dir):
-        
+
         print('Evaluation start...')
         gts = self.data
         sample_num = len(preds)
         joint_num = self.original_joint_num
- 
-        pred_2d_save = {}
-        pred_3d_save = {}
+
+        pred_list = []
+        # pred_2d_save = {}
+        # pred_3d_save = {}
         for n in range(sample_num):
-            
+
             gt = gts[n]
             f = gt['f']
             c = gt['c']
             bbox = gt['bbox']
             gt_3d_root = gt['root_cam']
             img_name = gt['img_path'].split('/')
-            img_name = img_name[-2] + '_' + img_name[-1].split('.')[0] # e.g., TS1_img_0001
-            
+            img_name = img_name[-2] + '_' + img_name[-1].split('.')[0]  # e.g., TS1_img_0001
+
             # restore coordinates to original space
             pred_2d_kpt = preds[n].copy()
             # only consider eval_joint
             pred_2d_kpt = np.take(pred_2d_kpt, self.eval_joint, axis=0)
-            pred_2d_kpt[:,0] = pred_2d_kpt[:,0] / cfg.output_shape[1] * bbox[2] + bbox[0]
-            pred_2d_kpt[:,1] = pred_2d_kpt[:,1] / cfg.output_shape[0] * bbox[3] + bbox[1]
-            pred_2d_kpt[:,2] = (pred_2d_kpt[:,2] / cfg.depth_dim * 2 - 1) * (cfg.bbox_3d_shape[0]/2) + gt_3d_root[2]
+            pred_2d_kpt[:, 0] = pred_2d_kpt[:, 0] / cfg.output_shape[1] * bbox[2] + bbox[0]
+            pred_2d_kpt[:, 1] = pred_2d_kpt[:, 1] / cfg.output_shape[0] * bbox[3] + bbox[1]
+            pred_2d_kpt[:, 2] = (pred_2d_kpt[:, 2] / cfg.depth_dim * 2 - 1) * (cfg.bbox_3d_shape[0] / 2) + gt_3d_root[2]
 
             # 2d kpt save
-            if img_name in pred_2d_save:
-                pred_2d_save[img_name].append(pred_2d_kpt[:,:2])
-            else:
-                pred_2d_save[img_name] = [pred_2d_kpt[:,:2]]
+            # if img_name in pred_2d_save:
+            #     pred_2d_save[img_name].append(pred_2d_kpt[:, :2])
+            # else:
+            #     pred_2d_save[img_name] = [pred_2d_kpt[:, :2]]
 
             vis = False
             if vis:
                 cvimg = cv2.imread(gt['img_path'], cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)
-                filename = str(random.randrange(1,500))
+                filename = str(random.randrange(1, 500))
                 tmpimg = cvimg.copy().astype(np.uint8)
-                tmpkps = np.zeros((3,joint_num))
-                tmpkps[0,:], tmpkps[1,:] = pred_2d_kpt[:,0], pred_2d_kpt[:,1]
-                tmpkps[2,:] = 1
+                tmpkps = np.zeros((3, joint_num))
+                tmpkps[0, :], tmpkps[1, :] = pred_2d_kpt[:, 0], pred_2d_kpt[:, 1]
+                tmpkps[2, :] = 1
                 tmpimg = vis_keypoints(tmpimg, tmpkps, self.skeleton)
                 cv2.imwrite(filename + '_output.jpg', tmpimg)
 
             # back project to camera coordinate system
             pred_3d_kpt = pixel2cam(pred_2d_kpt, f, c)
-            
-            # 3d kpt save
-            if img_name in pred_3d_save:
-                pred_3d_save[img_name].append(pred_3d_kpt)
-            else:
-                pred_3d_save[img_name] = [pred_3d_kpt]
-        
-        output_path = osp.join(result_dir,'preds_2d_kpt_mupots.mat')
-        sio.savemat(output_path, pred_2d_save)
-        print("Testing result is saved at " + output_path)
-        output_path = osp.join(result_dir,'preds_3d_kpt_mupots.mat')
-        sio.savemat(output_path, pred_3d_save)
+
+            # # 3d kpt save
+            # if img_name in pred_3d_save:
+            #     pred_3d_save[img_name].append(pred_3d_kpt)
+            # else:
+            #     pred_3d_save[img_name] = [pred_3d_kpt]
+
+            instance_case = {}
+            instance_case['f'] = f
+            instance_case['c'] = c
+            instance_case['bbox'] = bbox
+            instance_case['root_cam'] = gt['root_cam']
+            instance_case['img_path'] = gt['img_path']
+            instance_case['joint_cam'] = pred_2d_kpt[:, :2]
+            instance_case['joint_img'] = pred_3d_kpt
+            pred_list.append(instance_case)
+
+        # output_path = osp.join(result_dir, 'preds_2d_kpt_mupots.mat')
+        # sio.savemat(output_path, pred_2d_save)
+        # print("Testing result is saved at " + output_path)
+        # output_path = osp.join(result_dir, 'preds_3d_kpt_mupots.mat')
+        # sio.savemat(output_path, pred_3d_save)
+        output_path = osp.join(result_dir, 'preds_2d_3d_kpt_mupots.json')
+        with open(output_path, 'w') as f:
+            json.dump(pred_list, f)
+
         print("Testing result is saved at " + output_path)
 

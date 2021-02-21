@@ -46,7 +46,7 @@ class Config:
     batch_size = 32
 
     ## testing config
-    test_batch_size = 16
+    test_batch_size = 32
     flip_test = True
     # use_gt_info = True
     use_gt_info = False
