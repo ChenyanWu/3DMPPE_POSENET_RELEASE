@@ -82,6 +82,8 @@ class MuPoTS:
                 annot = json.load(f)
             
             for i in range(len(annot)):
+                if i > 100:
+                    break
                 image_id = annot[i]['image_id']
                 img = db.loadImgs(image_id)[0]
                 img_width, img_height = img['width'], img['height']
@@ -176,8 +178,6 @@ class MuPoTS:
         # pred_2d_save = {}
         # pred_3d_save = {}
         for n in range(sample_num):
-            if n > 100:
-                break
             gt = gts[n]
             f = gt['f']
             c = gt['c']
