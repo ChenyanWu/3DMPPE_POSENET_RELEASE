@@ -176,7 +176,8 @@ class MuPoTS:
         # pred_2d_save = {}
         # pred_3d_save = {}
         for n in range(sample_num):
-
+            if n > 100:
+                break
             gt = gts[n]
             f = gt['f']
             c = gt['c']
@@ -220,13 +221,13 @@ class MuPoTS:
             #     pred_3d_save[img_name] = [pred_3d_kpt]
 
             instance_case = {}
-            instance_case['f'] = f
-            instance_case['c'] = c
-            instance_case['bbox'] = bbox
-            instance_case['root_cam'] = gt['root_cam']
-            instance_case['img_path'] = gt['img_path']
-            instance_case['joint_cam'] = pred_2d_kpt[:, :2]
-            instance_case['joint_img'] = pred_3d_kpt
+            instance_case['f'] = f.tolist()
+            instance_case['c'] = c.tolist()
+            instance_case['bbox'] = bbox.tolist()
+            instance_case['root_cam'] = gt['root_cam'].tolist()
+            instance_case['img_path'] = gt['img_path'].tolist()
+            instance_case['joint_cam'] = pred_2d_kpt[:, :2].tolist()
+            instance_case['joint_img'] = pred_3d_kpt.tolist()
             pred_list.append(instance_case)
 
         # output_path = osp.join(result_dir, 'preds_2d_kpt_mupots.mat')
