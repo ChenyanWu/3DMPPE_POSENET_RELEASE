@@ -226,8 +226,8 @@ class MuPoTS:
             instance_case['bbox'] = bbox.tolist()
             instance_case['root_cam'] = gt['root_cam'].tolist()
             instance_case['img_path'] = gt['img_path']
-            instance_case['joint_cam'] = pred_2d_kpt[:, :2].tolist()
-            instance_case['joint_img'] = pred_3d_kpt.tolist()
+            instance_case['joint_cam'] = pred_3d_kpt.tolist()
+            instance_case['joint_img'] = pred_2d_kpt[:, :2].tolist()
             pred_list.append(instance_case)
 
         # output_path = osp.join(result_dir, 'preds_2d_kpt_mupots.mat')
