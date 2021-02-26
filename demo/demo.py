@@ -88,16 +88,19 @@ print('principal points: (' + str(princpt[0]) + ', ' + str(princpt[1]) + ')')
 # for each cropped and resized human image, forward it to PoseNet
 output_pose_2d_list = []
 output_pose_3d_list = []
-start = time.time()
+
 for n in range(person_num):
     bbox = process_bbox(np.array(bbox_list[n]), original_img_width, original_img_height)
     img, img2bb_trans = generate_patch_image(original_img, bbox, False, 1.0, 0.0, False) 
     img = transform(img).cuda()[None,:,:,:]
 
     # forward
+    start = time.time()
     with torch.no_grad():
         pose_3d = model(img) # x,y: pixel, z: root-relative depth (mm)
-
+    end = time.time()
+    fps = (end - start)
+    print(fps)
     # inverse affine transform (restore the crop and resize)
     pose_3d = pose_3d[0].cpu().numpy()
     pose_3d[:,0] = pose_3d[:,0] / cfg.output_shape[1] * cfg.input_shape[1]
@@ -111,9 +114,8 @@ for n in range(person_num):
     pose_3d[:,2] = (pose_3d[:,2] / cfg.depth_dim * 2 - 1) * (cfg.bbox_3d_shape[0]/2) + root_depth_list[n]
     pose_3d = pixel2cam(pose_3d, focal, princpt)
     output_pose_3d_list.append(pose_3d.copy())
-end = time.time()
-fps = 1./(end-start)
-print(fps)
+
+
 # visualize 2d poses
 vis_img = original_img.copy()
 for n in range(person_num):
